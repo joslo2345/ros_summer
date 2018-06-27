@@ -20,7 +20,7 @@ cv2.waitKey(0)
 
 #threshold
 #th, im_th = cv2.threshold(blurred_image_2, 126, 255, cv2.THRESH_OTSU)
-th, im_th = cv2.threshold(blurred_image_2, 130, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+th, im_th = cv2.threshold(blurred_image_2, 127, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 cv2.imshow("Thresholded Image", im_th)
 cv2.waitKey(0)
 
@@ -37,7 +37,7 @@ cv2.imshow("erosion",erosion)
 cv2.waitKey(0)
 
 #bakcground substractor
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+kernel = cv2.getStructuringElement(cv2.MORPH_CLOSE,(11,11))
 fgbg = cv2.bgsegm.createBackgroundSubtractorMOG()
 fgmask = fgbg.apply(im_in)
 cv2.imshow("bakcground substractor",fgmask)
