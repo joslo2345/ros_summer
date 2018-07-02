@@ -15,10 +15,10 @@ height = int(im_in.shape[0])
 
 cropped_image = im_in[third_y:height,0:width]
 cropped_image_2 = image[third_y:height,0:width]
-cv2.imshow("cropped image color ",cropped_image)
-cv2.imshow("cropped Image gray ",cropped_image_2)
-cv2.waitKey(0)
-'''
+#cv2.imshow("cropped image color ",cropped_image)
+#cv2.imshow("cropped Image gray ",cropped_image_2)
+#cv2.waitKey(0)
+
 # Gaussian Blur
 blurred_image_1 = cv2.GaussianBlur(cropped_image,(15,15),0)
 #cv2.imshow("GaussianBlur",blurred_image_1)
@@ -39,8 +39,9 @@ th, im_th = cv2.threshold(blurred_image_1, 200, 255, cv2.THRESH_BINARY+cv2.THRES
 # closing
 kernel = np.ones((9,9),np.uint8)
 closing = cv2.morphologyEx(im_th, cv2.MORPH_CLOSE, kernel, iterations = 1)
-#cv2.imshow("gradient",closing)
+#cv2.imshow("closing",closing)
 #cv2.waitKey(0)
+
 
 # find contours
 im2, contours, hierarchy = cv2.findContours(closing,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
