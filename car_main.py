@@ -9,8 +9,10 @@ im_in = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 # cropping image
 #third_x = int(im_in)
 third_y = int(im_in.shape[0]/2)
+print(third_y)
 width = int(im_in.shape[1])
-print "width/2 = ", width/2 , "width = ",  width
+print(width)
+#print "width/2 = ", width/2 , "width = ",  width
 height = int(im_in.shape[0])
 
 cropped_image = im_in[third_y:height,0:width]
@@ -22,11 +24,6 @@ cropped_image_2 = image[third_y:height,0:width]
 # Gaussian Blur
 blurred_image_1 = cv2.GaussianBlur(cropped_image,(15,15),0)
 #cv2.imshow("GaussianBlur",blurred_image_1)
-#cv2.waitKey(0)
-
-# bilateral Filter
-blurred_image_2 = cv2.bilateralFilter(cropped_image,15,55,55)
-#cv2.imshow("bilateralFilter",blurred_image_2)
 #cv2.waitKey(0)
 
 #threshold
@@ -58,7 +55,7 @@ cx_array = []
 cy_array = []
 for x in ordered_contours:
     #print(cv2.contourArea(x))
-    if cv2.contourArea(x) > 0:
+    if cv2.contourArea(x) > 110:
         # print area
         #print(cv2.contourArea(x))
         M = cv2.moments(x)
@@ -69,51 +66,25 @@ for x in ordered_contours:
         cx_array.append(cx)
         cy = int(M['m01']/M['m00'])
         cy_array.append(cy)
-        #cv2.circle(cropped_image_2,(cx,cy),10,(0,255,0),3)
-        cv2.imshow("contours",cropped_image_2)
-        cv2.waitKey(0)
+        cv2.circle(cropped_image_2,(cx,cy),10,(0,255,0),3)
+        #cv2.imshow("contours",cropped_image_2)
+        #cv2.waitKey(0)
 
 # arrays of centroids xs and ys values
-#print(cx_array)
 cx_array_sorted = sorted(cx_array,reverse=True)
-#print(cx_array_sorted)
-#print(cy_array)
+print "cx_sorted = ", cx_array_sorted
+print "cx = ", cx_array
+print "cy = ", cy_array
 
 #ploting centroids of the blobs
 cy_array_invert = [-x for x in cy_array]
 plt.plot(cx_array,cy_array_invert,"bo")
+#plt.show()
 
-# parameter to exclude some blobs
-center_of_way = cx_array_sorted[0]-int(width/2)
-#center_of_way = cx_array_sorted[1]-int(width/2)
-half_center_of_way = int(center_of_way/2)
-range_excluding = int(width/2)-half_center_of_way
-print(range_excluding)
-# excluding blobs
-cx_include = []
-cy_include = []
-for x in ordered_contours:
-    #print(cv2.contourArea(x))
-    if cv2.contourArea(x) > 50:
-        M = cv2.moments(x)
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
-        if cx >= range_excluding:
-            cx_include.append(int(cx))
-            cy_include.append(int(cy))
-            cv2.drawContours(cropped_image_2, x, -1, (0,0,255), 3)
-            cv2.circle(cropped_image_2,(cx,cy),10,(0,255,0),3)
-            #cv2.imshow("contours",cropped_image_2)
-            #cv2.waitKey(0)
-
-# centroids included
-print(cx_include)
-print(cy_include)
-print "\n"
 
 list_centroids = {}
-for x in range(len(cx_include)):
-    list_centroids[cx_include[x]] = cy_include[x]
+for x in range(len(cx_array)):
+    list_centroids[cx_array[x]] = cy_array[x]
 print(list_centroids)
 list_centroids_sorted = sorted(list_centroids.items(), key=operator.itemgetter(0),reverse=True)
 #sorting centroids
@@ -132,14 +103,14 @@ print "\n"
 # exclude most right centroid
 x = x[1:]
 y = y[1:]
-print(x)
-print(y)
+print x , "\n"
+print y , "\n"
 
 # linear regresion procedure
 x = np.array(x, dtype=np.float64)
 y = np.array(y, dtype=np.float64)
+
 n_elements = len(x)
-print(n_elements)
 x_sum = sum(x)
 x2_sum = sum(x**2)
 y_sum = sum(y)
@@ -148,38 +119,44 @@ xy_sum = sum(x*y)
 slope = ((n_elements*xy_sum)-(x_sum*y_sum))/((n_elements*x2_sum)-(x_sum**2))
 b = (y_sum/n_elements)-slope*(x_sum/n_elements)
 print "y = %s*x + %s" %(slope,b)
-#x_test = list(range(range_excluding,(int(width/2)+range_excluding),10))
-x_test = [0,int(width/2)+range_excluding]
+
+x_test = [cx_array_sorted[-1],cx_array_sorted[-1]+((cx_array_sorted[0]-cx_array_sorted[-1])/2)]
 x_test = np.array(x_test, dtype=np.float64)
 
 y_calculated = slope*x_test + b
 plt.plot(x_test,-1*y_calculated)
 plt.savefig("grafica.png")
 
+
+#line form linear regresion
 cv2.line(cropped_image_2,
 (int(x_test[0]),int(y_calculated[0])),
 (int(x_test[1]),int(y_calculated[1])),
 (255,0,0),
 thickness=4)
-
-y_calculated_mean = int(sum(y_calculated)/len(y_calculated))
-x_calculate = (y_calculated_mean-b)/slope
-x_calculate = int(x_calculate)
+#cv2.imshow("lines",cropped_image_2)
+#cv2.waitKey(0)
 
 cv2.line(cropped_image_2,
-((x_calculate),int(y_calculated_mean)),
-list_centroids_sorted[0],
+(0,list_centroids_sorted[0][1]),
+(width,list_centroids_sorted[0][1]),
 (255,120,0),
 thickness=4)
+#cv2.imshow("lines",cropped_image_2)
+#cv2.waitKey(0)
 
+#y_calculated_mean = third_y/2
+y_calculated_mean = list_centroids_sorted[0][1]
+x_calculate = (y_calculated_mean-b)/slope
+x_calculate = int(x_calculate)
+print(x_calculate)
 x_center_car = int(list_centroids_sorted[0][0])+x_calculate
 x_center_car = int(x_center_car/2)
 y_center_car = int(list_centroids_sorted[0][1]+y_calculated_mean)
 y_center_car = int(y_center_car/2)
 
-cv2.circle(cropped_image_2,(x_center_car,y_center_car),8,(0,255,189),3)
+cv2.circle(cropped_image_2,(x_center_car,y_center_car),12,(0,255,189),3)
 
 # final image with blobs and centroids
 cv2.imshow("lines",cropped_image_2)
 cv2.waitKey(0)
-'''
