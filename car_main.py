@@ -15,16 +15,16 @@ height = int(im_in.shape[0])
 
 cropped_image = im_in[third_y:height,0:width]
 cropped_image_2 = image[third_y:height,0:width]
-#cv2.imshow("cropped image",cropped_image)
-#cv2.waitKey(0)
-
+cv2.imshow("cropped image color ",cropped_image)
+cv2.imshow("cropped Image gray ",cropped_image_2)
+cv2.waitKey(0)
+'''
 # Gaussian Blur
 blurred_image_1 = cv2.GaussianBlur(cropped_image,(15,15),0)
 #cv2.imshow("GaussianBlur",blurred_image_1)
 #cv2.waitKey(0)
 
 # bilateral Filter
-
 blurred_image_2 = cv2.bilateralFilter(cropped_image,15,55,55)
 #cv2.imshow("bilateralFilter",blurred_image_2)
 #cv2.waitKey(0)
@@ -36,16 +36,13 @@ th, im_th = cv2.threshold(blurred_image_1, 200, 255, cv2.THRESH_BINARY+cv2.THRES
 #cv2.waitKey(0)
 
 #Morphological transformantion
-
 # closing
 kernel = np.ones((9,9),np.uint8)
 closing = cv2.morphologyEx(im_th, cv2.MORPH_CLOSE, kernel, iterations = 1)
 #cv2.imshow("gradient",closing)
 #cv2.waitKey(0)
 
-
 # find contours
-
 im2, contours, hierarchy = cv2.findContours(closing,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 #for x in contours[0]:
 #    print(x)
@@ -184,3 +181,4 @@ cv2.circle(cropped_image_2,(x_center_car,y_center_car),8,(0,255,189),3)
 # final image with blobs and centroids
 cv2.imshow("lines",cropped_image_2)
 cv2.waitKey(0)
+'''
