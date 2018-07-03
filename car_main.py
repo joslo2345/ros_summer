@@ -2,9 +2,14 @@ import cv2;
 import numpy as np;
 import matplotlib.pyplot as plt
 import operator
+
 # Read image
-image = cv2.imread("camino_art_4.png")
+image = cv2.imread("prueba_1.jpg")
 im_in = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+im_inverted = cv2.bitwise_not(im_in)
+#cv2.imshow("inverted",im_inverted)
+#cv2.waitKey(0)
+
 
 # cropping image
 #third_x = int(im_in)
@@ -17,30 +22,35 @@ height = int(im_in.shape[0])
 
 cropped_image = im_in[third_y:height,0:width]
 cropped_image_2 = image[third_y:height,0:width]
+cropped_image_3 = im_inverted[third_y:height,0:width]
 #cv2.imshow("cropped image color ",cropped_image)
 #cv2.imshow("cropped Image gray ",cropped_image_2)
 #cv2.waitKey(0)
 
 # Gaussian Blur
-blurred_image_1 = cv2.GaussianBlur(cropped_image,(15,15),0)
+
+blurred_image_1 = cv2.GaussianBlur(cropped_image_3,(15,15),0)
 #cv2.imshow("GaussianBlur",blurred_image_1)
 #cv2.waitKey(0)
 
 #threshold
-#th, im_th = cv2.threshold(blurred_image_2, 200, 255, cv2.THRESH_BINARY)
+
+#th, im_th = cv2.threshold(blurred_image_1, 200, 255, cv2.THRESH_BINARY)
 th, im_th = cv2.threshold(blurred_image_1, 200, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 #cv2.imshow("Thresholded Image", im_th)
 #cv2.waitKey(0)
 
 #Morphological transformantion
 # closing
+
 kernel = np.ones((9,9),np.uint8)
 closing = cv2.morphologyEx(im_th, cv2.MORPH_CLOSE, kernel, iterations = 1)
-#cv2.imshow("closing",closing)
-#cv2.waitKey(0)
+cv2.imshow("closing",closing)
+cv2.waitKey(0)
 
 
 # find contours
+
 im2, contours, hierarchy = cv2.findContours(closing,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 #for x in contours[0]:
 #    print(x)
@@ -71,12 +81,14 @@ for x in ordered_contours:
         #cv2.waitKey(0)
 
 # arrays of centroids xs and ys values
+
 cx_array_sorted = sorted(cx_array,reverse=True)
 print "cx_sorted = ", cx_array_sorted
 print "cx = ", cx_array
 print "cy = ", cy_array
 
 #ploting centroids of the blobs
+
 cy_array_invert = [-x for x in cy_array]
 plt.plot(cx_array,cy_array_invert,"bo")
 #plt.show()
@@ -87,10 +99,14 @@ for x in range(len(cx_array)):
     list_centroids[cx_array[x]] = cy_array[x]
 print(list_centroids)
 list_centroids_sorted = sorted(list_centroids.items(), key=operator.itemgetter(0),reverse=True)
+
 #sorting centroids
+
 print(list_centroids_sorted)
 print "\n"
+
 # preparing centroids for linear regresion
+
 x = []
 y = []
 for i in list_centroids_sorted:
@@ -101,12 +117,14 @@ print(y)
 print "\n"
 
 # exclude most right centroid
+
 x = x[1:]
 y = y[1:]
 print x , "\n"
 print y , "\n"
 
 # linear regresion procedure
+
 x = np.array(x, dtype=np.float64)
 y = np.array(y, dtype=np.float64)
 
@@ -129,6 +147,7 @@ plt.savefig("grafica.png")
 
 
 #line form linear regresion
+
 cv2.line(cropped_image_2,
 (int(x_test[0]),int(y_calculated[0])),
 (int(x_test[1]),int(y_calculated[1])),
@@ -158,5 +177,6 @@ y_center_car = int(y_center_car/2)
 cv2.circle(cropped_image_2,(x_center_car,y_center_car),12,(0,255,189),3)
 
 # final image with blobs and centroids
+
 cv2.imshow("lines",cropped_image_2)
 cv2.waitKey(0)
