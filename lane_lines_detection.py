@@ -1,26 +1,32 @@
 import cv2;
-import numpy as np
+import numpy as np;
 import matplotlib.pyplot as plt
 import operator
 
 # Read image
-image = cv2.imread("prueba_1.jpg")
-im_in = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-im_inverted = cv2.bitwise_not(im_in)
-#cv2.imshow("inverted",im_inverted)
-#cv2.waitKey(0)
+image = cv2.imread("white_test_2.jpg")
 
-# white color mask
-lower = np.uint8([200, 200, 200])
-upper = np.uint8([255, 255, 255])
-white_mask = cv2.inRange(image, lower, upper)
-# yellow color mask
-lower = np.uint8([190, 190,   0])
-upper = np.uint8([255, 255, 255])
-yellow_mask = cv2.inRange(image, lower, upper)
-# combine the mask
-mask = cv2.bitwise_or(white_mask, yellow_mask)
-masked = cv2.bitwise_and(image, image, mask = mask)
+# cropping image
+#third_x = int(im_in)
+third_y = int(image.shape[0]/2)
+width = int(image.shape[1])
+height = int(image.shape[0])
+print(third_y)
+print(width)
 
-cv2.imshow("carretera",masked)
+
+
+
+cropped_image = image[third_y:height,0:width]
+
+def select_rgb_white_yellow(image):
+    # white color mask
+    #lower = np.uint8([220, 220, 20])
+    #upper = np.uint8([255, 255, 255])
+    lower = np.uint8([200, 200, 200])
+    upper = np.uint8([255, 255, 255])
+    mask = cv2.inRange(image, lower, upper)
+    masked = cv2.bitwise_and(image, image, mask = mask)
+    return masked
+cv2.imshow("masked",select_rgb_white_yellow(cropped_image))
 cv2.waitKey(0)

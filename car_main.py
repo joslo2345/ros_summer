@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import operator
 
 # Read image
-image = cv2.imread("prueba_1.jpg")
+image = cv2.imread("lane_line_2.png")
 im_in = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 im_inverted = cv2.bitwise_not(im_in)
 #cv2.imshow("inverted",im_inverted)
@@ -13,7 +13,7 @@ im_inverted = cv2.bitwise_not(im_in)
 
 # cropping image
 #third_x = int(im_in)
-third_y = int(im_in.shape[0]/2)
+third_y = int(im_in.shape[0]/1.25)
 print(third_y)
 width = int(im_in.shape[1])
 print(width)
@@ -61,6 +61,7 @@ ordered_contours = sorted(contours,key = cv2.contourArea, reverse = True)
 #cv2.drawContours(cropped_image, ordered_contours, -1, (0,255,0), 3)
 #cv2.imshow("contours",cropped_image)
 #cv2.waitKey(0)
+
 cx_array = []
 cy_array = []
 for x in ordered_contours:
@@ -156,6 +157,7 @@ thickness=4)
 #cv2.imshow("lines",cropped_image_2)
 #cv2.waitKey(0)
 
+# line for center
 cv2.line(cropped_image_2,
 (0,list_centroids_sorted[0][1]),
 (width,list_centroids_sorted[0][1]),
@@ -164,19 +166,56 @@ thickness=4)
 #cv2.imshow("lines",cropped_image_2)
 #cv2.waitKey(0)
 
+
 #y_calculated_mean = third_y/2
 y_calculated_mean = list_centroids_sorted[0][1]
 x_calculate = (y_calculated_mean-b)/slope
 x_calculate = int(x_calculate)
-print(x_calculate)
+print x_calculate, y_calculated_mean, "\n"
+
 x_center_car = int(list_centroids_sorted[0][0])+x_calculate
 x_center_car = int(x_center_car/2)
 y_center_car = int(list_centroids_sorted[0][1]+y_calculated_mean)
 y_center_car = int(y_center_car/2)
-
+print x_center_car, y_center_car
 cv2.circle(cropped_image_2,(x_center_car,y_center_car),12,(0,255,189),3)
 
+# line for angle
+cv2.line(cropped_image_2,
+(int(width/2),third_y/2),
+(x_center_car,y_center_car),
+(0,120,255),
+thickness=4)
+
+cv2.line(cropped_image_2,
+(int(width/2),third_y/2),
+(int(width/2),y_center_car),
+(30,155,120),
+thickness=4)
+
+cv2.circle(cropped_image_2,(int(width/2),third_y/2),12,(0,255,189),3)
+a = x_center_car-int(width/2)
+if a > 0 :
+    b = abs(y_center_car-third_y/2)
+    c = ((a**2)+(b**2))**(0.5)
+    angle = np.arcsin(a/c)
+    angle = angle * 180
+    angle = angle / 3.1416
+    print "angulo  = ", angle
+else:
+    a = abs(a)
+    b = abs(y_center_car-third_y/2)
+    c = ((a**2)+(b**2))**(0.5)
+    angle = np.arcsin(a/c)
+    angle = angle * 180
+    angle = angle / 3.1416
+    print "angulo  = ", angle
 # final image with blobs and centroids
 
 cv2.imshow("lines",cropped_image_2)
 cv2.waitKey(0)
+
+# ros launch xml
+# export ROS_MASTER_URI=http://192.168.50.200:11311
+# ifconfig
+# export ROS_IP=192.168.50.246
