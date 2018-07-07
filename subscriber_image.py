@@ -9,6 +9,7 @@ import numpy as np;
 import matplotlib.pyplot as plt
 import operator
 car_angle = 90
+<<<<<<< HEAD
 Steering = rospy.Publisher('/manual_control/steering', Int16, queue_size=1)
 
 
@@ -22,12 +23,19 @@ def callback(data):
     global car_angle, Steering
     global speed_value, Speed
     global Control_Start_Stop
+=======
+Steering = rospy.Publisher('/manual_control/steering', Int16, queue_size=10)
+
+def callback(data):
+    global car_angle, Steering
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     #rospy.loginfo(rospy.get_caller_id(), data.data)
     cv_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="bgr8")
     im_in = cv2.cvtColor(cv_image, cv2.COLOR_RGB2GRAY)
     im_inverted = cv2.bitwise_not(im_in)
     #cv2.imshow("inverted",im_inverted)
     #cv2.waitKey(0)
+<<<<<<< HEAD
     speed_value = -150
 
 
@@ -37,6 +45,16 @@ def callback(data):
     #print "height cropped = ", third_y, "\n"
     width = int(im_in.shape[1])
     #print "width image = ", width, "\n"
+=======
+
+    # cropping image
+    #third_x = int(im_in)
+    third_y = int(im_in.shape[0]/1.3)
+    #print(third_y)
+    width = int(im_in.shape[1])
+    #print(width)
+    #print "width/2 = ", width/2 , "width = ",  width
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     height = int(im_in.shape[0])
     cropped_image = im_in[third_y:height,0:width]
     cropped_image_2 = cv_image[third_y:height,0:width]
@@ -102,9 +120,15 @@ def callback(data):
     # arrays of centroids xs and ys values
 
     cx_array_sorted = sorted(cx_array,reverse=True)
+<<<<<<< HEAD
     #print "cx_sorted = ", cx_array_sorted, "\n"
     #print "cx = ", cx_array, "\n"
     #print "cy = ", cy_array, "\n"
+=======
+    #print "cx_sorted = ", cx_array_sorted
+    #print "cx = ", cx_array
+    #print "cy = ", cy_array
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     #ploting centroids of the blobs
 
@@ -116,12 +140,21 @@ def callback(data):
     list_centroids = {}
     for x in range(len(cx_array)):
         list_centroids[cx_array[x]] = cy_array[x]
+<<<<<<< HEAD
     #print "list centroids = ", list_centroids, "\n"
+=======
+    #print(list_centroids)
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     list_centroids_sorted = sorted(list_centroids.items(), key=operator.itemgetter(0),reverse=True)
 
     #sorting centroids
 
+<<<<<<< HEAD
     #print("list centroids sorted = ", list_centroids_sorted, "\n")
+=======
+    #print(list_centroids_sorted)
+    #print "\n"
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     # preparing centroids for linear regresion
 
@@ -130,15 +163,26 @@ def callback(data):
     for i in list_centroids_sorted:
         x.append(i[0])
         y.append(i[1])
+<<<<<<< HEAD
     #print("x centroids = ", x, "\n")
     #print("y centrois = ", y, "\n" )
+=======
+    #print(x)
+    #print(y)
+    #print "\n"
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     # exclude most right centroid
 
     x = x[1:]
     y = y[1:]
+<<<<<<< HEAD
     #print "x line centroids", x, "\n"
     #print "y line centroids", y, "\n"
+=======
+    #print x , "\n"
+    #print y , "\n"
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     # linear regresion procedure
 
@@ -150,6 +194,7 @@ def callback(data):
     x2_sum = sum(x**2)
     y_sum = sum(y)
     xy_sum = sum(x*y)
+<<<<<<< HEAD
     try:
         slope = ((n_elements*xy_sum)-(x_sum*y_sum))/((n_elements*x2_sum)-(x_sum**2))
         b = (y_sum/n_elements)-slope*(x_sum/n_elements)
@@ -159,6 +204,12 @@ def callback(data):
         return
     #b = (y_sum/n_elements)-slope*(x_sum/n_elements)
     #print "y = %s*x + %s" %(slope,b), "\n"
+=======
+
+    slope = ((n_elements*xy_sum)-(x_sum*y_sum))/((n_elements*x2_sum)-(x_sum**2))
+    b = (y_sum/n_elements)-slope*(x_sum/n_elements)
+    #print "y = %s*x + %s" %(slope,b)
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     x_test = [cx_array_sorted[-1],cx_array_sorted[-1]+((cx_array_sorted[0]-cx_array_sorted[-1])/2)]
     x_test = np.array(x_test, dtype=np.float64)
@@ -168,6 +219,7 @@ def callback(data):
     #plt.savefig("grafica.png")
 
 
+<<<<<<< HEAD
     #line from linear regresion
     try:
         cv2.line(cropped_image_2,
@@ -179,10 +231,20 @@ def callback(data):
         speed_value = 0
         Speed.publish(Int16(speed_value))
         return
+=======
+    #line form linear regresion
+
+    cv2.line(cropped_image_2,
+    (int(x_test[0]),int(y_calculated[0])),
+    (int(x_test[1]),int(y_calculated[1])),
+    (255,0,0),
+    thickness=4)
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     #cv2.imshow("lines",cropped_image_2)
     #cv2.waitKey(0)
 
     # line for center
+<<<<<<< HEAD
     '''
     cv2.line(cropped_image_2,
     (0,cropped_image_2.shape[0]/2),
@@ -190,6 +252,8 @@ def callback(data):
     (255,120,0),
     thickness=4)'''
 
+=======
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     cv2.line(cropped_image_2,
     (0,list_centroids_sorted[0][1]),
     (width,list_centroids_sorted[0][1]),
@@ -201,6 +265,7 @@ def callback(data):
 
     #y_calculated_mean = third_y/2
     y_calculated_mean = list_centroids_sorted[0][1]
+<<<<<<< HEAD
     #y_calculated_mean = third_y
     try:
         x_calculate = (y_calculated_mean-b)/slope
@@ -211,37 +276,62 @@ def callback(data):
     x_calculate = int(x_calculate)
     #print " x_calculate = ", x_calculate, "\n"
     #print "y calculated mean = ", y_calculated_mean, "\n"
+=======
+    x_calculate = (y_calculated_mean-b)/slope
+    x_calculate = int(x_calculate)
+    #print x_calculate, y_calculated_mean, "\n"
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
     x_center_car = int(list_centroids_sorted[0][0])+x_calculate
     x_center_car = int(x_center_car/2)
     y_center_car = int(list_centroids_sorted[0][1]+y_calculated_mean)
     y_center_car = int(y_center_car/2)
+<<<<<<< HEAD
     #print "x center car = ", x_center_car, "\n"
     #print "y center car = ", y_center_car, "\n"
+=======
+    #print x_center_car, y_center_car
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     cv2.circle(cropped_image_2,(x_center_car,y_center_car),12,(0,255,189),3)
 
     # line for angle
     cv2.line(cropped_image_2,
+<<<<<<< HEAD
     (int(width/2),cropped_image_2.shape[0]),
+=======
+    (int(width/2),third_y/2),
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     (x_center_car,y_center_car),
     (0,120,255),
     thickness=4)
 
     cv2.line(cropped_image_2,
+<<<<<<< HEAD
     (int(width/2),cropped_image_2.shape[0]),
+=======
+    (int(width/2),third_y/2),
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     (int(width/2),y_center_car),
     (30,155,120),
     thickness=4)
 
+<<<<<<< HEAD
     cv2.circle(cropped_image_2,(int(width/2),cropped_image_2.shape[0]),12,(0,255,189),3)
     a = x_center_car-int(width/2)
     if a > 0 :
         #b = abs(y_center_car-third_y/2)
         b = abs(cropped_image_2.shape[0]-y_center_car)
+=======
+    cv2.circle(cropped_image_2,(int(width/2),third_y/2),12,(0,255,189),3)
+    a = x_center_car-int(width/2)
+    if a > 0 :
+        b = abs(y_center_car-third_y/2)
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
         c = ((a**2)+(b**2))**(0.5)
         angle = np.arcsin(a/c)
         angle = angle * 180
         angle = angle / 3.1416
+<<<<<<< HEAD
         # car_angle = (90+angle)
         car_angle = ((angle * 29.35)/4.8)
         car_angle *= 0.1
@@ -256,10 +346,19 @@ def callback(data):
         a = abs(a)
         #b = abs(y_center_car-third_y/2)
         b = abs(cropped_image_2.shape[0]-y_center_car)
+=======
+        car_angle = (90+angle)
+        print "angulo +  = ", car_angle
+        #Steering.publish(Int16(car_angle))
+    else:
+        a = abs(a)
+        b = abs(y_center_car-third_y/2)
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
         c = ((a**2)+(b**2))**(0.5)
         angle = np.arcsin(a/c)
         angle = angle * 180
         angle = angle / 3.1416
+<<<<<<< HEAD
         #car_angle = (90-angle)
         car_angle = ((angle * 29.35)/4.8)
         car_angle *= 0.1
@@ -272,6 +371,12 @@ def callback(data):
         Speed.publish(Int16(speed_value))
     # final image with blobs and centroids
     #Speed.publish(Int16(speed_value))
+=======
+        car_angle = (90-angle)
+        print "angulo - = ", car_angle
+        #Steering.publish(Int16(car_angle))
+    # final image with blobs and centroids
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
     cv2.imshow("lines",cropped_image_2)
     cv2.waitKey(1)
     #rospy.loginfo(data)
@@ -279,6 +384,7 @@ def callback(data):
 
 def listener():
     global car_angle, Steering
+<<<<<<< HEAD
     global speed_value, Speed
     global Control_Start_Stop
     rospy.init_node('listener', anonymous=True)
@@ -294,6 +400,12 @@ def listener():
         Speed.publish(Int16(speed_value))
         print "Shutting down ROS Image feature detector module"
         cv2.destroyAllWindows()
+=======
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber('Image', Image, callback)
+    #Steering.publish(Int16(car_angle))
+    rospy.spin()
+>>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 
 if __name__ == '__main__':
     try:
