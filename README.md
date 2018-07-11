@@ -1,6 +1,8 @@
 # :computer: :school: Ros_Summer :school: :computer:
 ## :computer: :camera: Mobile Robot Control based on Computer Vision :computer: :camera:
+For running:
 
+    $ python subscriber_image.py
 ##  :closed_book: Bibliography :closed_book:
 
 * [Autonomous Racing Robot With an Arduino, a Raspberry Pi and a Pi Camera](https://becominghuman.ai/autonomous-racing-robot-with-an-arduino-a-raspberry-pi-and-a-pi-camera-3e72819e1e63)
