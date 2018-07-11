@@ -1,0 +1,41 @@
+import cv2;
+import numpy as np;
+
+# Read image
+im_in = cv2.imread("carretera.jpg", cv2.IMREAD_GRAYSCALE)
+
+blurred_image = cv2.GaussianBlur(im_in,(13,13),0)
+
+th, im_th = cv2.threshold(blurred_image, 126, 255, cv2.THRESH_OTSU)
+#th, im_th = cv2.threshold(blurred_image, 127, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+cv2.imshow("Thresholded Image", im_th)
+cv2.waitKey(0)
+
+
+
+# blobs
+
+params = cv2.SimpleBlobDetector_Params()
+# Filter by Area.
+params.filterByArea = True
+params.minArea = 15
+
+# Create a detector with the parameters
+ver = (cv2.__version__).split('.')
+if int(ver[0]) < 3 :
+	detector = cv2.SimpleBlobDetector(params)
+else :
+	detector = cv2.SimpleBlobDetector_create(params)
+
+# Detect blobs.
+keypoints = detector.detect(im_th)
+
+# Draw detected blobs as red circles.
+# cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures
+# the size of the circle corresponds to the size of blob
+
+im_with_keypoints = cv2.drawKeypoints(im_in, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+# Show blobs
+cv2.imshow("Keypoints", im_with_keypoints)
+cv2.waitKey(0)
