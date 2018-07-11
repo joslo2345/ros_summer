@@ -266,3 +266,4 @@ cv2.waitKey(0)
 # ifconfig
 # export ROS_MASTER_URI=http://192.168.50.200:11311
 # export ROS_IP=192.168.50.246
+# rosrun ige_transport republish compressed in:=app/camera/color/image_raw raw out:=Image
