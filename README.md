@@ -3,6 +3,15 @@
 For running:
 
     $ python subscriber_image.py
+
+This repository was created to have a backup for the project made on the summer for the client server robot idea.  
+The main idea was create a leader and follower mobile robots. This repository is for the leader robot.  
+The robot is the client in the client server model used.  
+Any computer with the ROS software, right configuration and the scripts in the repository could serve as a Server.  
+The robot uses python code along with the OpenCV library to calculate the middle center of a made highway on a table.  
+After calibration of the camera angle and wheel degree movement we succed on make he robot drive through a highway straight and curved.  
+
+
 ##  :closed_book: Bibliography :closed_book:
 
 * [Autonomous Racing Robot With an Arduino, a Raspberry Pi and a Pi Camera](https://becominghuman.ai/autonomous-racing-robot-with-an-arduino-a-raspberry-pi-and-a-pi-camera-3e72819e1e63)
