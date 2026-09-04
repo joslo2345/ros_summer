@@ -226,7 +226,6 @@ if a > 0 :
     angle = np.arcsin(a/c)
     angle = angle * 180
     angle = angle / 3.1416
-<<<<<<< HEAD
     # car_angle = (90+angle)
     car_angle = ((angle * 29.35)/4.8)
     car_angle *= 0.1
@@ -234,9 +233,6 @@ if a > 0 :
     if car_angle > 180:
         car_angle = 90
     print "angulo +  = ", car_angle
-=======
-    print "angulo  = ", (90+angle)
->>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 else:
     a = abs(a)
     #b = abs(y_center_car-third_y/2)
@@ -245,7 +241,6 @@ else:
     angle = np.arcsin(a/c)
     angle = angle * 180
     angle = angle / 3.1416
-<<<<<<< HEAD
     #car_angle = (90-angle)
     car_angle = ((angle * 29.35)/4.8)
     car_angle *= 0.1
@@ -254,9 +249,6 @@ else:
         car_angle = 90
     print "angulo - = ", car_angle
 
-=======
-    print "angulo  = ", (90-angle)
->>>>>>> 81d320bc99d230998b2753b049f11fa66d505730
 # final image with blobs and centroids
 
 cv2.imshow("lines",cropped_image_2)

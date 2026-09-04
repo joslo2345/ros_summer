@@ -50,11 +50,11 @@ def talker():
     cam = cv2.VideoCapture(0)
     while not rospy.is_shutdown():
         meta, frame = cam.read()
-        msg_frame = CvBridge().cv2_to_imgmsg(frame)
+        msg_frame = CvBridge().cv2_to_imgmsg(frame, "bgr8")
         #msg_frame_edges = CvBridge().cv2_to_imgmsg(frame_edges)
         #rospy.loginfo(msg_frame)
-        VideoRaw.publish(msg_frame, "RGB8")
-        #rate.sleep()
+        VideoRaw.publish(msg_frame)
+        rate.sleep()
 
 if __name__ == '__main__':
     try:
